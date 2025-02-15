@@ -1,0 +1,54 @@
+#INI UNTUK SETTINGAN AWAL UNTUK NTP DAN HOSPOT SET UP DAN SERVER PROFILES HARUS MANUAL
+#TAPI UNTUK USER PROFILES DLL BISA MENGGUNAKAN SCRIPT
+
+# Mengubah identity router
+/system identity set name=Router-18
+
+# Menambahkan user baru
+/user add name=reza group=full password=tkjbisa
+
+# Mengubah nama interface
+/interface set ether1 name=ether1-Internet
+/interface set ether2 name=ether2-Hotspot
+/interface set ether3 name=ether3-Server
+
+# Menambahkan IP address
+/ip address add address=10.11.118.2/29 interface=ether1-Internet
+/ip address add address=172.16.18.1/28 interface=ether3-Server
+/ip address add address=192.168.18.1/24 interface=ether2-Hotspot
+
+# Menambahkan Routes
+/ip route add gateway=10.11.118.1
+
+# Menambahkan DNS Server
+/ip dns set servers=118.98.44.10,118.98.44.50 allow-remote-requests=yes
+
+# Menambahkan Firewall NAT
+/ip firewall nat add chain=srcnat src-address=172.16.18.2 action=masquerade
+
+#HARUS SETTING HOSTPOT SET UP SECARA MANUAL DAN SERVER PROFILES MANUAL JIKA SUDAH JALANKAN SCRIPT DIBAWAH UNTUK USER DLL
+
+# Membuat User Profiles
+/ip hotspot user profile add name=pengawas address-pool=hs-pool-2 shared-users=3 rate-limit=30M/30M
+/ip hotspot user profile add name=guru address-pool=hs-pool-2 shared-users=2 rate-limit=20M/20M
+/ip hotspot user profile add name=siswa address-pool=hs-pool-2 shared-users=5 rate-limit=10M/10M
+
+# Menambahkan Users
+/ip hotspot user add name=pengawas1 password=pengawas1 profile=pengawas server=all
+/ip hotspot user add name=pengawas2 password=pengawas2 profile=pengawas server=all
+/ip hotspot user add name=pengawas3 password=pengawas3 profile=pengawas server=all
+/ip hotspot user add name=guru1 password=guru1 profile=guru server=all
+/ip hotspot user add name=guru2 password=guru2 profile=guru server=all
+/ip hotspot user add name=siswa1 password=siswa1 profile=siswa server=all
+/ip hotspot user add name=siswa2 password=siswa2 profile=siswa server=all
+/ip hotspot user add name=siswa3 password=siswa3 profile=siswa server=all
+/ip hotspot user add name=siswa4 password=siswa4 profile=siswa server=all
+/ip hotspot user add name=siswa5 password=siswa5 profile=siswa server=all
+
+# Menambahkan Walled Garden
+/ip hotspot walled-garden add dst-host=*.fahresi.my.id action=allow
+/ip hotspot walled-garden add dst-host=smkn1purwosari.sch.id action=allow
+/ip hotspot walled-garden add dst-host=*.google.com action=allow
+
+# Menambahkan Walled Garden IP List
+/ip hotspot walled-garden ip add dst-address=172.16.18.2 action=accept
